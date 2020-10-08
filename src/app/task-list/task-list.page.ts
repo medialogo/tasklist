@@ -1,5 +1,11 @@
+import { compilePipeFromMetadata } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { ActionSheetController, AlertController } from '@ionic/angular';
+
+// @Component({
+//   selector: 'alert-example',
+//   templateUrl: 'alert-example.html',
+//   styleUrls: ['./alert-example.css'],
 
 @Component({
   selector: 'app-task-list',
@@ -30,24 +36,23 @@ export class TaskListPage implements OnInit {
 
   async changeTask(index: number) {
     const actionSheet = await this.actionSheetController.create({
-      header: 'タスクの変更',
+      header: '変更・削除',
       buttons: [
-        {
-          text: '削除',
-          role: 'destructive',
-          icon: 'trash',
-          handler: () => {
-            console.log('Destructive clicked' + index);
-            this.tasks.splice(index, 1);
-            localStorage.tasks = JSON.stringify(this.tasks);
-          }
-        },
         {
           text: '変更',
           icon: 'create',
           handler: () => {
             console.log('Archive clicked');
             this._renameTask(index);
+          }
+        },
+        {
+          text: '削除',
+          role: 'destructive',
+          icon: 'trash',
+          handler: () => {
+            console.log('Destructive clicked' + index);
+            this.presentAlertConfirm(index);
           }
         },
         {
@@ -62,6 +67,34 @@ export class TaskListPage implements OnInit {
     });
     actionSheet.present();
   }
+  async presentAlertConfirm(index) {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: "「" + this.tasks[index].name + "」",
+      message: 'をほんとうに削除してよろしいですか？',
+      buttons: [
+        {
+          text: 'キャンセル',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+            return false;
+          }
+        }, {
+          text: 'OK',
+          handler: data => {
+            console.log(this.tasks[index].name + " deleted");
+            this.tasks.splice(index, 1);
+            localStorage.tasks = JSON.stringify(this.tasks);
+
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }  
   async _renameTask(index: number) {
     const prompt = await this.alertController.create({
       header: '変更後のタスク',

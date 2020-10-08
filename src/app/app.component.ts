@@ -13,12 +13,12 @@ export class AppComponent implements OnInit {
   public selectedIndex = 0;
   public appPages = [
     {
-      title: 'タスク登録',
+      title: '新規TODO',
       url: '/home',
       icon: 'home'
     },
     {
-      title: 'タスク一覧',
+      title: 'TODO一覧',
       url: '/tasks',
       icon: 'list'
     },
