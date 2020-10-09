@@ -31,7 +31,9 @@ export class TaskListPage implements OnInit {
       this.tasks = JSON.parse(localStorage.tasks);
     }
   }
-
+  showmessage(msg) {
+    console.log(msg);
+  }
   doReorder(ev: CustomEvent<ItemReorderEventDetail>) {
     console.log('Dragged from index', ev.detail.from, 'to', ev.detail.to);
     console.log('Before complete', this.tasks);
