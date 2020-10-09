@@ -1,11 +1,9 @@
 import { compilePipeFromMetadata } from '@angular/compiler';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActionSheetController, AlertController } from '@ionic/angular';
+import { IonReorderGroup } from '@ionic/angular';
+import { ItemReorderEventDetail } from '@ionic/core';
 
-// @Component({
-//   selector: 'alert-example',
-//   templateUrl: 'alert-example.html',
-//   styleUrls: ['./alert-example.css'],
 
 @Component({
   selector: 'app-task-list',
@@ -14,11 +12,12 @@ import { ActionSheetController, AlertController } from '@ionic/angular';
 })
 
 export class TaskListPage implements OnInit {
-
   tasks: { name: string}[] = [
     {name: 'ステゴザウルス'},
     {name: 'プテラノドン'}
   ];
+  @ViewChild(IonReorderGroup) reorderGroup: IonReorderGroup;
+
   constructor(
     public actionSheetController: ActionSheetController,
     public alertController: AlertController
@@ -33,6 +32,16 @@ export class TaskListPage implements OnInit {
     }
   }
 
+  doReorder(ev: CustomEvent<ItemReorderEventDetail>) {
+    console.log('Dragged from index', ev.detail.from, 'to', ev.detail.to);
+    console.log('Before complete', this.tasks);
+    this.tasks = ev.detail.complete(this.tasks);
+    console.log('After complete', this.tasks);
+  }
+
+  toggleReorderGroup() {
+    this.reorderGroup.disabled = !this.reorderGroup.disabled;
+  }
 
   async changeTask(index: number) {
     const actionSheet = await this.actionSheetController.create({
